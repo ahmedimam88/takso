@@ -25,6 +25,11 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :takso, Takso.Guardian,
+  issuer: "takso",
+  secret_key: "Odbcnwp1yaktljHFXjv0L1XZjNXS4YVrbmLl3/v59dUEVJciltP/wEKx3FiycxuH"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
+

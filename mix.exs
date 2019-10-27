@@ -8,6 +8,7 @@ defmodule Takso.MixProject do
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      preferred_cli_env: ["white_bread.run": :test],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -42,7 +43,13 @@ defmodule Takso.MixProject do
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 1.0"}
+      {:plug_cowboy, "~> 1.0"},
+      {:white_bread, "~> 4.5", only: [:test]},
+      {:hound, "~> 1.0"},
+      {:guardian, "~> 1.2"},
+      {:pbkdf2_elixir, "~> 1.0"},
+      {:httpoison, "~> 1.6"},
+      {:poison, "~> 3.1"}
     ]
   end
 
