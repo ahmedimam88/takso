@@ -6,15 +6,15 @@ defmodule Takso.Sales.Taxi do
     field :username, :string
     field :location, :string
     field :status, :string
-    field :SeatsCount , :integer
-    field :RatePerKm , :float
-    field :DriverFullName, :string
+    field :seatscount , :integer
+    field :rateperkm , :float
+    field :driverfullname, :string
     timestamps()
   end
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:username, :location, :status, :SeatsCount, :RatePerKm, :DriverFullName])
+    |> cast(params, [:username, :location, :status, :seatscount, :rateperkm, :driverfullname])
   end
 
 end

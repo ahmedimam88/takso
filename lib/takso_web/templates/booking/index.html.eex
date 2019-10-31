@@ -6,6 +6,7 @@
       <th>Pickup address</th>
       <th>Drop off address</th>
       <th>Status</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
@@ -14,7 +15,9 @@
       <td><%= booking.pickup_address %></td>
       <td><%= booking.dropoff_address %></td>
       <td><%= booking.status %></td>
+      <td><span><%= link "Cancel", to: Routes.booking_path(@conn, :delete, booking), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span></td>
     </tr>
 <% end %>
   </tbody>
 </table>
+<span><%= link "New", to: Routes.booking_path(@conn, :new) %></span>

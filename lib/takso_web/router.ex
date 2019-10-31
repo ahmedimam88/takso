@@ -34,8 +34,14 @@ defmodule TaksoWeb.Router do
   scope "/", TaksoWeb do
     pipe_through [:browser, :browser_auth, :ensure_auth]
     resources "/users", UserController
+    get "/bookings/possible_allocations", BookingController, :possible_allocations
     get "/bookings/summary", BookingController, :summary
+    post "/bookings/summary", BookingController, :submit_requests
+    get "/bookings/requests" , BookingController, :booking_requests
     resources "/bookings", BookingController
+
+
+
   end
 
   # Other scopes may use custom stacks.

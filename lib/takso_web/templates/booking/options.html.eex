@@ -1,0 +1,29 @@
+<%= form_for @conn, Routes.booking_path(@conn, :submit_requests), fn f -> %>
+
+  <table class="table">
+  <thead>
+    <tr>
+      <th>Select</th>
+      <th>Driver Full Name</th>
+      <th>Price in EUR</th>
+      <th>Seat Count</th>
+      <th>Current Location</th>
+    </tr>
+  </thead>
+    <%= label f, :tags, "Tags", class: "control-label" %>
+    <br/>
+    <%= for ptaxi <- @possible_taxis do %>
+      <tr>
+      <td><%= checkbox :tags, "#{ptaxi.id}", value: ptaxi.driverfullname  %> </td>
+      <td><%= ptaxi.driverfullname %></td> 
+      <td><%= ptaxi.rateperkm* @dist %></td>
+      <td><%= ptaxi.seatscount %></td>
+      <td><%= ptaxi.location %></td>
+      </tr>
+    <%= end %>
+    </table>
+  </table>
+  <div class="form-group">
+    <%= submit "Submit", id: "submit_button", class: "btn btn-primary" %>
+  </div>
+<% end %>

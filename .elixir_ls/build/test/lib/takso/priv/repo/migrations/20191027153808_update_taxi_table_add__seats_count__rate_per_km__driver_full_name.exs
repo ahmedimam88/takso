@@ -3,9 +3,9 @@ defmodule Takso.Repo.Migrations.UpdateTaxiTableAdd_SeatsCount_RatePerKm_DriverFu
 
   def change do
     alter table(:taxis) do
-      add :SeatsCount, :integer
-      add :RatePerKm, :float
-      add :DriverFullName, :string
+      add :seatscount, :integer
+      add :rateperkm, :float
+      add :driverfullname, :string
     end
   end
 end

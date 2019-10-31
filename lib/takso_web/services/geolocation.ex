@@ -10,12 +10,13 @@ defmodule Takso.Geolocation do
 
   defp get_key(), do: "AuzcYSqODXU7Em49GkqDJQnqw8-Crv0hUM14LMRMXXftDKM62E0IAOAjauFDYMyr"
 
+  @spec distance(binary, binary) :: [float, ...]
   def distance(origin, destination) do
     [o1, o2] = find_location(origin)
     [d1, d2] = find_location(destination)
     uri = "https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins=#{o1},#{o2}&destinations=#{d1},#{d2}&travelMode=driving&key=#{get_key()}"
     response = HTTPoison.get! uri
-    matches = Regex.named_captures(~r/travelD\D+(?<dist>\d+.\d+)\D+(?<dur>\d+.\d+)/,response.body)
+    matches = Regex.named_captures(~r/travelDistance\D+(?<dist>\d+.\d+)\D+(?<dur>\d+.\d+)/,response.body)
     [{v1, _}, {v2, _}] = [matches["dist"] |> Float.parse, matches["dur"] |> Float.parse]
     [v1, v2]
  end

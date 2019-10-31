@@ -14,6 +14,7 @@
                         'Elixir.Takso.Guardian.Plug','Elixir.Takso.Repo',
                         'Elixir.Takso.Sales.Allocation',
                         'Elixir.Takso.Sales.Booking',
+                        'Elixir.Takso.Sales.Request',
                         'Elixir.Takso.Sales.Taxi','Elixir.TaksoWeb',
                         'Elixir.TaksoWeb.BookingController',
                         'Elixir.TaksoWeb.BookingView',
