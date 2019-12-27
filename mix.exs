@@ -1,17 +1,18 @@
-defmodule Takso.MixProject do
+defmodule Takso.Mixfile do
   use Mix.Project
 
   def project do
     [
       app: :takso,
-      version: "0.1.0",
-      elixir: "~> 1.5",
-      elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      version: "0.0.1",
+      elixir: "~> 1.4",
+      elixirc_paths: elixirc_paths(Mix.env),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers,
+      start_permanent: Mix.env == :prod,
       preferred_cli_env: ["white_bread.run": :test],
-      start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
+
     ]
   end
 
@@ -27,29 +28,27 @@ defmodule Takso.MixProject do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib"]
+  defp elixirc_paths(_),     do: ["lib"]
 
   # Specifies your project dependencies.
   #
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.0"},
-      {:phoenix_pubsub, "~> 1.1"},
-      {:phoenix_ecto, "~> 4.0"},
-      {:ecto_sql, "~> 3.0"},
+      {:phoenix, "~> 1.3.4"},
+      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_ecto, "~> 3.2"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.11"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_html, "~> 2.10"},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 1.0"},
       {:white_bread, "~> 4.5", only: [:test]},
       {:hound, "~> 1.0"},
       {:guardian, "~> 1.2"},
       {:pbkdf2_elixir, "~> 1.0"},
       {:httpoison, "~> 1.6"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
     ]
   end
 

@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Takso · Phoenix Framework</title>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Hello Takso!</title>
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
+
   <body>
-          <header class="header">
+    <div class="container">
+      <header class="header">
+      <div><span><%= link "Home", to: page_path(@conn, :index) %></span></div>
+
         <ol class="breadcrumb pull-right">
 <%= if Takso.Authentication.load_current_user(@conn) do %>
           <li>Hello <%= Takso.Authentication.load_current_user(@conn).username %></li>
-          <li><%= link "Log out", to: Routes.session_path(@conn, :delete, Takso.Authentication.load_current_user(@conn)), method: "delete" %></li>
+          <li><%= link "Log out", to: session_path(@conn, :delete, Takso.Authentication.load_current_user(@conn)), method: "delete" %></li>
 <% else %>
-          <li><%= link "Log in", to: Routes.session_path(@conn, :new) %></li>
+          <li><%= link "Log in", to: session_path(@conn, :new) %></li>
 <% end %>
         </ol>
         <span class="logo"></span>
       </header>
 
-
-    <main role="main" class="container">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-      <%= render @view_module, @view_template, assigns %>
-    </main>
-    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+
+      <main role="main">
+        <%= render @view_module, @view_template, assigns %>
+      </main>
+
+    </div> <!-- /container -->
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

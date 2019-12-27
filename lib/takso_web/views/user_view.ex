@@ -1,3 +1,3 @@
 defmodule TaksoWeb.UserView do
-    use TaksoWeb, :view
+  use TaksoWeb, :view
 end

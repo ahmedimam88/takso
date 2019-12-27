@@ -3,33 +3,29 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-
-# General application configuration
 use Mix.Config
 
+# General application configuration
 config :takso,
   ecto_repos: [Takso.Repo]
 
 # Configures the endpoint
 config :takso, TaksoWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "+aKehWnd5vD1JOE8Kur8Ypgdq2c5vG8P8FQleIkz73P0Vi0+Rnbe0haC1O7IvOII",
+  secret_key_base: "hjF8VEl9V14AWB/CkuIu4VYM67HGim1d5jQZ03+snmrynXlw9dvfD0fvgMOY0Awm",
   render_errors: [view: TaksoWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Takso.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Takso.PubSub,
+           adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
-
-# Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
-
-config :takso, Takso.Guardian,
-  issuer: "takso",
-  secret_key: "Odbcnwp1yaktljHFXjv0L1XZjNXS4YVrbmLl3/v59dUEVJciltP/wEKx3FiycxuH"
+  metadata: [:user_id]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env()}.exs"
+import_config "#{Mix.env}.exs"
 
+config :takso, Takso.Guardian,
+  issuer: "takso",
+  secret_key: "ly1AwJLetM/z018UGJdBJouWWe7Sc5HE38kR1kb6Q0Zd2T5lk/LxDyhUoekJ7SrS"

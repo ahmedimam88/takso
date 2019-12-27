@@ -10,9 +10,11 @@ defmodule Takso.Sales.Allocation do
     timestamps()
   end
 
+  @doc false
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:status])
     |> validate_required([:status])
   end
+
 end

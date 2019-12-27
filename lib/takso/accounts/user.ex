@@ -5,15 +5,17 @@ defmodule Takso.Accounts.User do
   schema "users" do
     field :name, :string
     field :username, :string
-    field :password, :string , virtual: true
+    field :password, :string, virtual: true
     field :hashed_password, :string
+    belongs_to :taxi, Takso.Sales.Taxi
     has_many :bookings, Takso.Sales.Booking
+
     timestamps()
   end
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :username, :password])
+    |> cast(params, [:name, :username, :password, :taxi_id])
     |> validate_required([:name, :username])
     |> unique_constraint(:username)
     |> validate_length(:password, min: 6)

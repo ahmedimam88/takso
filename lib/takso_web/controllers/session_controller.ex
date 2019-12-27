@@ -1,7 +1,9 @@
 defmodule TaksoWeb.SessionController do
   use TaksoWeb, :controller
+
   alias Takso.{Authentication, Repo}
   alias Takso.Accounts.User
+
   def new(conn, _params) do
     render conn, "new.html"
   end
@@ -13,7 +15,7 @@ defmodule TaksoWeb.SessionController do
         conn
         |> Authentication.login(user)
         |> put_flash(:info, "Welcome #{username}")
-        |> redirect(to: Routes.page_path(conn, :index))
+        |> redirect(to: page_path(conn, :index))
       {:error, _reason} ->
         conn
         |> put_flash(:error,"Bad User Credentials")
@@ -24,7 +26,7 @@ defmodule TaksoWeb.SessionController do
   def delete(conn, _params) do
     conn
     |> Takso.Authentication.logout()
-    |> redirect(to: Routes.page_path(conn, :index))
+    |> redirect(to: page_path(conn, :index))
   end
 
 end

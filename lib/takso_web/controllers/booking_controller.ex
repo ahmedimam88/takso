@@ -1,31 +1,25 @@
 defmodule TaksoWeb.BookingController do
   use TaksoWeb, :controller
   import Ecto.Query, only: [from: 2]
-  alias Takso.Sales.{Taxi,Booking}
+  alias Takso.{Repo, Authentication}
   alias Ecto.{Changeset, Multi}
-  alias Takso.Authentication
-  alias Takso.AuthPipeline
   alias Takso.Sales.{Taxi, Booking, Allocation, Request}
   alias Takso.Geolocation
-  alias Takso.Repo
 
-  def new(conn, _params) do
-    render conn, "new.html"
-  end
 
   def index(conn, _params) do
-    bookings = Repo.all(from b in Booking, where: b.user_id == ^Takso.Authentication.load_current_user(conn).id)
+    user = Authentication.load_current_user(conn)
+    bookings = Repo.all(from b in Booking, where: b.user_id == ^user.id)
     render conn, "index.html", bookings: bookings
   end
 
-  def booking_requests(conn, _params) do
-    requests = Repo.all(from r in Request, where: r.taxi_id == ^Takso.Authentication.load_current_user(conn).id)
-    render conn, "requests.html", requests: requests
+  def new(conn, _params) do
+    changeset = Booking.changeset(%Booking{}, %{})
+    render conn, "new.html", changeset: changeset
   end
 
-  def create(conn, booking_params) do
-
-    openbookingquery = from b in Booking, where: b.status == "OPEN" and b.user_id == ^Takso.Authentication.load_current_user(conn).id, select: b
+  def create(conn, %{"booking" => booking_params}) do
+    openbookingquery = from b in Booking, where: (b.status == "OPEN" or b.status == "ALLOCATED") and b.user_id == ^Takso.Authentication.load_current_user(conn).id, select: b
     openbookings = Repo.all(openbookingquery)
 
     case length(openbookings) == 0 do
@@ -40,22 +34,23 @@ defmodule TaksoWeb.BookingController do
 
       query = from t in Taxi, where: t.status == "AVAILABLE", select: t
       available_taxis = Repo.all(query)
+      [dist, dur] = Geolocation.distance(booking.pickup_address,booking.dropoff_address)
 
       case length(available_taxis) > 0 do
         true -> conn
-                |> put_flash(:info, "Please choose prefered taxi")
-                |> redirect(to: Routes.booking_path(conn, :possible_allocations))
+                |> put_flash(:info, "Please choose prefered taxi, The total distance is " <> Kernel.inspect(dist) <> " KM and the duration of the trip is " <> Kernel.inspect(dur) )
+                |> redirect(to: booking_path(conn, :possible_allocations))
 
         _    -> Booking.changeset(booking) |> Changeset.put_change(:status, "REJECTED")
                 |> Repo.update
 
                 conn
                 |> put_flash(:info, "At present, there is no taxi available!")
-                |> redirect(to: Routes.booking_path(conn, :index))
+                #|> redirect(to: booking_path(conn, :index))
       end
   _ -> conn
-        |> put_flash(:info, "You already has an open booking!")
-        |> redirect(to: Routes.booking_path(conn, :index))
+        |> put_flash(:info, "You already have an open booking!")
+        |> redirect(to: booking_path(conn, :index))
     end
   end
 
@@ -65,7 +60,7 @@ defmodule TaksoWeb.BookingController do
     possible_taxis = Repo.all(query)
     query2 = from b in Booking, where: b.status == "OPEN" and b.user_id == ^Takso.Authentication.load_current_user(conn).id, select: b
     booking = Repo.all(query2) |> hd
-    [dist, dur] = dist = Geolocation.distance(booking.pickup_address,booking.dropoff_address)
+    [dist, dur] = Geolocation.distance(booking.pickup_address,booking.dropoff_address)
 
     render conn, "options.html", possible_taxis: possible_taxis, dist: dist, dur: dur
   end
@@ -82,7 +77,7 @@ defmodule TaksoWeb.BookingController do
 
             conn
             |> put_flash(:info, "You didn't choose any taxi driver, your booking will be cancelled")
-            |> redirect(to: Routes.booking_path(conn, :index))
+            |> redirect(to: booking_path(conn, :index))
     end
   end
 
@@ -98,19 +93,11 @@ defmodule TaksoWeb.BookingController do
   defp add_requests(conn,[],_params) do
     conn
     |> put_flash(:info, "Please Hold until one taxi driver approves your request")
-    |> redirect(to: Routes.booking_path(conn, :index))
+    |> redirect(to: booking_path(conn, :index))
   end
 
   @spec summary(Plug.Conn.t(), any) :: Plug.Conn.t()
-  def summary(conn, _params) do
-    query = from t in Taxi,
-            join: a in Allocation, on: t.id == a.taxi_id,
-            group_by: t.username,
-            where: a.status == "ACCEPTED",
-            select: {t.username, count(a.id)}
-    tuples = Repo.all(query)
-    render conn, "summary.html", tuples
-  end
+
 
 
   defp checked_ids(conn, checked_list) do
@@ -133,14 +120,30 @@ defmodule TaksoWeb.BookingController do
 
 def delete(conn, %{"id" => id}) do
     booking = Repo.get!(Booking, id)
-    Booking.changeset(booking) |> Changeset.put_change(:status, "CANCELLED") |> Repo.update
-    taxiquery = from r in Request, where: r.booking_id == ^id , select: r
-    Repo.update_all(taxiquery, set: [status: "CANCELLED"] )
+    case booking.status == "OPEN" do
+      true ->
+              Booking.changeset(booking) |> Changeset.put_change(:status, "CANCELLED") |> Repo.update
+              taxiquery = from r in Request, where: r.booking_id == ^id #, select: r
+              Repo.update_all(taxiquery, set: [status: "CANCELLED"] )
+              conn
+              |> put_flash(:info, "Booking Cancelled successfully.")
+              |> redirect(to: booking_path(conn, :index))
+      false ->
 
-    conn
-    |> put_flash(:info, "Booking Cancelled successfully.")
-    |> redirect(to: Routes.booking_path(conn, :index))
+              conn
+              |> put_flash(:info, "You can't cancel this booking.")
+              |> redirect(to: booking_path(conn, :index))
+      end
 end
 
+def summary(conn, _params) do
+  query = from t in Taxi,
+          join: a in Allocation, on: t.id == a.taxi_id,
+          group_by: t.username,
+          where: a.status == "ACCEPTED",
+          select: {t.username, count(a.id)}
+  tuples = Repo.all(query)
+  render conn, "summary.html", tuples
+end
 
 end

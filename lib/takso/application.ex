@@ -1,19 +1,19 @@
 defmodule Takso.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
-
   use Application
 
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
   def start(_type, _args) do
-    # List all child processes to be supervised
+    import Supervisor.Spec
+
+    # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
-      Takso.Repo,
+      supervisor(Takso.Repo, []),
       # Start the endpoint when the application starts
-      TaksoWeb.Endpoint
-      # Starts a worker by calling: Takso.Worker.start_link(arg)
-      # {Takso.Worker, arg},
+      supervisor(TaksoWeb.Endpoint, []),
+      # Start your own worker by calling: Takso.Worker.start_link(arg1, arg2, arg3)
+      # worker(Takso.Worker, [arg1, arg2, arg3]),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

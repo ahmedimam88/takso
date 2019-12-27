@@ -1,0 +1,25 @@
+<h2>Listing Active Requests</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Request ID</th>
+      <th>Pickup Address</th>
+      <th>Dropoff Address</th>
+      <th>Status</th>
+      <th>Action</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for request <- @requests do %>
+    <tr>
+      <td><%= request.id %></td>
+      <td><%= request.pickup_address %> </td>
+      <td><%= request.dropoff_address %> </td>
+      <td><%= request.status %></td>
+      <td><span><%= link "Approve", to: taxi_path(@conn, :approve, request), class: "btn btn-default btn-xs" %></span>
+          <span><%= link "Reject", to: taxi_path(@conn, :reject, request), class: "btn btn-default btn-xs" %></span>
+      </td>
+<% end %>
+  </tbody>
+</table>

@@ -20,28 +20,26 @@ defmodule TaksoWeb do
   def controller do
     quote do
       use Phoenix.Controller, namespace: TaksoWeb
-
       import Plug.Conn
+      import TaksoWeb.Router.Helpers
       import TaksoWeb.Gettext
-      alias TaksoWeb.Router.Helpers, as: Routes
     end
   end
 
   def view do
     quote do
-      use Phoenix.View,
-        root: "lib/takso_web/templates",
-        namespace: TaksoWeb
+      use Phoenix.View, root: "lib/takso_web/templates",
+                        namespace: TaksoWeb
 
       # Import convenience functions from controllers
-      import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
+      import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
 
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
+      import TaksoWeb.Router.Helpers
       import TaksoWeb.ErrorHelpers
       import TaksoWeb.Gettext
-      alias TaksoWeb.Router.Helpers, as: Routes
     end
   end
 

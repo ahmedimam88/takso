@@ -6,15 +6,17 @@ config :takso, TaksoWeb.Endpoint,
   http: [port: 4001],
   server: true
 
-# Print only warnings and errors during test
-config :logger, level: :warn
 config :hound, driver: "chrome_driver"
 config :takso, sql_sandbox: true
 
+# Print only warnings and errors during test
+config :logger, level: :warn
+
 # Configure your database
 config :takso, Takso.Repo,
+  adapter: Ecto.Adapters.Postgres,
   username: "postgres",
-  password: "A1234567890",
-  database: "takso_test",
+  password: "postgres",
+  database: "takso_dev",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

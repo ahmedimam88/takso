@@ -7,6 +7,7 @@ defmodule Takso.Sales.Booking do
     field :dropoff_address, :string
     field :status, :string, default: "open"
     belongs_to :user, Takso.Accounts.User
+
     timestamps()
   end
 

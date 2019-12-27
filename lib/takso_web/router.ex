@@ -7,10 +7,7 @@ defmodule TaksoWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-  end
-
-  pipeline :api do
-    plug :accepts, ["json"]
+    #plug Takso.Authentication, repo: Takso.Repo
   end
 
   pipeline :browser_auth do
@@ -19,6 +16,10 @@ defmodule TaksoWeb.Router do
 
   pipeline :ensure_auth do
     plug Guardian.Plug.EnsureAuthenticated
+  end
+
+  pipeline :api do
+    plug :accepts, ["json"]
   end
 
   scope "/", TaksoWeb do
@@ -39,7 +40,9 @@ defmodule TaksoWeb.Router do
     post "/bookings/summary", BookingController, :submit_requests
     get "/bookings/requests" , BookingController, :booking_requests
     resources "/bookings", BookingController
-
+    get "/requests/:id/approve" , TaxiController, :approve
+    get "/requests/:id/reject" , TaxiController, :reject
+    resources "/requests" , TaxiController
 
 
   end
